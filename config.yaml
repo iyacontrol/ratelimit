@@ -1,0 +1,19 @@
+domain: apis
+descriptors:
+  - key: generic_key
+    value: scmp-gateway
+    rate_limit:
+      unit: second
+      requests_per_unit: 100
+
+  - key: generic_key
+    value: openapi-gateway
+    rate_limit:
+      unit: second
+      requests_per_unit: 10
+
+  - key: generic_key
+    value: cmdb
+    rate_limit:
+      unit: minute
+      requests_per_unit: 1
