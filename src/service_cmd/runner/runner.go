@@ -12,7 +12,7 @@ import (
 	"github.com/lyft/ratelimit/src/config"
 	"github.com/lyft/ratelimit/src/redis"
 	"github.com/lyft/ratelimit/src/server"
-	"github.com/lyft/ratelimit/src/service"
+	ratelimit "github.com/lyft/ratelimit/src/service"
 	"github.com/lyft/ratelimit/src/settings"
 	logger "github.com/sirupsen/logrus"
 )
@@ -31,14 +31,14 @@ func Run() {
 
 	var perSecondPool redis.Pool
 	if s.RedisPerSecond {
-		perSecondPool = redis.NewPoolImpl(srv.Scope().Scope("redis_per_second_pool"), s.RedisPerSecondSocketType, s.RedisPerSecondUrl, s.RedisPerSecondPoolSize)
+		perSecondPool = redis.NewPoolImpl(srv.Scope().Scope("redis_per_second_pool"), s.RedisPerSecondSocketType, s.RedisPerSecondUrl, s.RedisPerSecondPoolSize, s.RedisPassword)
 
 	}
 
 	service := ratelimit.NewService(
 		srv.Runtime(),
 		redis.NewRateLimitCacheImpl(
-			redis.NewPoolImpl(srv.Scope().Scope("redis_pool"), s.RedisSocketType, s.RedisUrl, s.RedisPoolSize),
+			redis.NewPoolImpl(srv.Scope().Scope("redis_pool"), s.RedisSocketType, s.RedisUrl, s.RedisPoolSize, s.RedisPassword),
 			perSecondPool,
 			redis.NewTimeSourceImpl(),
 			rand.New(redis.NewLockedSource(time.Now().Unix())),
